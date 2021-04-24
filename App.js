@@ -1,21 +1,20 @@
-import React from 'react';
-import {createStackNavigator} from '@react-navigation/stack';
-import {NavigationContainer, StackActions} from '@react-navigation/native';
-import loginScreen from './screens/loginScreen';
-import registerScreen from './screens/registerScreen';
+import React from 'react'
+import { createStackNavigator } from '@react-navigation/stack'
+import { NavigationContainer, StackActions } from '@react-navigation/native'
+import LoginScreen from './screens/LoginScreen'
+import RegisterScreen from './screens/RegisterScreen'
+import ChatScreen from './screens/ChatScreen'
 
-const stack = createStackNavigator();
-
+const Stack = createStackNavigator()
 
 export default function App() {
-
   return (
     <NavigationContainer>
-      <Stack.Navigator>
-        <Stack.Screen name ="Login" component = {loginScreen}/>
-          <Stack.Screen name ="Register" component = {registerScreen}/>
+      <Stack.Navigator screenOptions={{ headerTitleAlign: 'center' }}>
+        <Stack.Screen name='Login' component={LoginScreen} />
+        <Stack.Screen name='Register' component={RegisterScreen} />
+        <Stack.Screen name='Chat' component={ChatScreen} />
       </Stack.Navigator>
     </NavigationContainer>
-    
-  );
+  )
 }
