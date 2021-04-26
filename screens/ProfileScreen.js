@@ -1,14 +1,40 @@
 import React, { useEffect, useState, useLayoutEffect } from 'react'
-import { View, Text, StyleSheet, Image } from 'react-native'
-import { Input, Button } from 'react-native-elements'
+import { View, Text, StyleSheet, Image, Switch } from 'react-native'
 import { auth } from '../firebase'
-import { AntDesign } from '@expo/vector-icons'
 import { TouchableOpacity } from 'react-native-gesture-handler'
+import AsyncStorage from '@react-native-async-storage/async-storage'
+import { Input, Button } from 'react-native-elements'
 
 const ProfileScreen = ({ navigation }) => {
+  const [darkMode, setDarkMode] = useState('')
+
+  const storeDarkmode = async (value) => {
+    try {
+      await AsyncStorage.setItem('darkMode', value.toString())
+      setDarkMode(value)
+    } catch (e) {
+      // saving error
+    }
+  }
+
+  const getDarkmode = async () => {
+    try {
+      const value = await AsyncStorage.getItem('darkMode')
+      if (value === 'true') {
+        setDarkMode(Boolean(value))
+      } else {
+        setDarkMode(false)
+      }
+      // }
+    } catch (e) {
+      console.log(e)
+      storeDarkmode(false)
+    }
+  }
+
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(function (user) {})
-
+    getDarkmode()
     return unsubscribe
   }, [])
 
@@ -20,6 +46,18 @@ const ProfileScreen = ({ navigation }) => {
         style={styles.profilePic}
         resizeMode={'cover'}
       />
+      <Switch
+        trackColor={{ false: '#767577', true: '#81b0ff' }}
+        thumbColor={darkMode ? '#f5dd4b' : '#f4f3f4'}
+        ios_backgroundColor='#3e3e3e'
+        // onValueChange={handleSwitch}
+        style={styles.switch}
+        value={darkMode}
+      />
+      <Button onPress={() => storeDarkmode(!darkMode)}>Test</Button>
+      {/* <Button onPress={() => console.log(darkMode)} style={{ marginTop: 30 }}>
+        Test
+      </Button> */}
     </View>
   )
 }
@@ -30,15 +68,19 @@ const styles = StyleSheet.create({
   profilePic: {
     width: 200,
     height: 200,
-    borderRadius: '50%',
     marginLeft: 'auto',
     marginRight: 'auto',
     marginTop: 50,
+    borderRadius: 200 / 2,
   },
   container: {
-    flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
     padding: 10,
+  },
+  switch: {
+    marginLeft: 'auto',
+    marginRight: 'auto',
+    marginTop: 25,
   },
 })

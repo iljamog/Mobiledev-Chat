@@ -35,27 +35,32 @@ const LoginScreen = ({ navigation }) => {
 
   return (
     <View styles={styles.container}>
-      <Input
-        placeholder='Your e-mail adress'
-        label='Email'
-        leftIcon={{ type: 'material', name: 'email' }}
-        value={email}
-        onChangeText={(text) => setEmail(text)}
-      />
-      <Input
-        placeholder='Your password'
-        label='Password'
-        leftIcon={{ type: 'material', name: 'lock' }}
-        value={password}
-        onChangeText={(text) => setPassword(text)}
-        secureTextEntry
-      />
-      <Button title='Sign in' onPress={signIn} style={styles.button} />
-      <Button
-        title='Register'
-        style={styles.button}
-        onPress={() => navigation.navigate('Register')}
-      />
+      <View>
+        <Input
+          placeholder='Your e-mail adress'
+          label='Email'
+          leftIcon={{ type: 'material', name: 'email' }}
+          value={email}
+          onChangeText={(text) => setEmail(text)}
+        />
+        <Input
+          placeholder='Your password'
+          label='Password'
+          leftIcon={{ type: 'material', name: 'lock' }}
+          value={password}
+          onChangeText={(text) => setPassword(text)}
+          secureTextEntry
+        />
+      </View>
+      <View style={styles.buttonContainer}>
+        <Button title='Sign in' onPress={signIn} style={styles.button} />
+        <Button
+          title='Register'
+          style={styles.button}
+          buttonStyle={{ marginTop: 20 }}
+          onPress={() => navigation.navigate('Register')}
+        />
+      </View>
     </View>
   )
 }
@@ -65,11 +70,18 @@ export default LoginScreen
 const styles = StyleSheet.create({
   button: {
     width: 200,
-    marginTop: 10,
+    width: '40%',
+    borderRadius: 25,
   },
   container: {
     flex: 1,
     alignItems: 'center',
     padding: 10,
+  },
+  buttonContainer: {
+    marginTop: 20,
+    width: '50%',
+    marginLeft: 'auto',
+    marginRight: 'auto',
   },
 })

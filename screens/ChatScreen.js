@@ -1,45 +1,36 @@
 import React, { useLayoutEffect, useState, useCallback, useEffect } from 'react'
 import { View, Text, Touchable, Image } from 'react-native'
-import { GiftedChat, InputToolbar, Actions } from 'react-native-gifted-chat'
+import { useTheme } from '@react-navigation/native'
+import {
+  GiftedChat,
+  InputToolbar,
+  Actions,
+  Send,
+} from 'react-native-gifted-chat'
 import { auth, db } from '../firebase'
 import { AntDesign, SimpleLineIcons } from '@expo/vector-icons'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import { Avatar } from 'react-native-elements/dist/avatar/Avatar'
-import DocumentPicker from 'react-native-document-picker'
-import { Audio } from 'expo-av';
-
+import { Audio } from 'expo-av'
 
 const ChatScreen = ({ navigation }) => {
   const [messages, setMessages] = useState([])
-  const [recording, setRecording] = React.useState();
-
-  //   useEffect(() => {
-  //     setMessages([
-  //       {
-  //         _id: 1,
-  //         text: 'Hello developer',
-  //         createdAt: new Date(),
-  //         user: {
-  //           _id: 2,
-  //           name: 'React Native',
-  //           avatar: 'https://placeimg.com/140/140/any',
-  //         },
-  //       },
-  //     ])
-  //   }, [])
+  const [recording, setRecording] = useState()
+  const [itemColor, setItemColor] = useState('black')
+  const { currentTheme } = useTheme()
 
   // Customizing the input bar
 
-  const customtInputToolbar = props => {
+  const customtInputToolbar = (props) => {
     return (
       <InputToolbar
         {...props}
         containerStyle={{
-          backgroundColor: "white",
+          backgroundColor: 'currentTheme.colors',
         }}
       />
-    );
-  };
+    )
+  }
 
   // menu next to text input area
   const renderActions = (props) => (
@@ -54,85 +45,42 @@ const ChatScreen = ({ navigation }) => {
         marginRight: 4,
         marginBottom: 0,
       }}
-      icon={() => (
-        <SimpleLineIcons name="menu" size={24} color="black" />
-      )}
+      icon={() => <SimpleLineIcons name='menu' size={24} color={itemColor} />}
       options={{
-        'Record a voice':
-          async function startRecording() {
-            try {
-              console.log('Requesting permissions..');
-              await Audio.requestPermissionsAsync();
-              await Audio.setAudioModeAsync({
-                allowsRecordingIOS: true,
-                playsInSilentModeIOS: true,
-              }); 
-              console.log('Starting recording..');
-              const recording = new Audio.Recording();
-              await recording.prepareToRecordAsync(Audio.RECORDING_OPTIONS_PRESET_HIGH_QUALITY);
-              await recording.startAsync(); 
-              setRecording(recording);
-              console.log('Recording started');
-            } catch (err) {
-              console.error('Failed to start recording', err);
-            }
+        'Voice record': async function startRecording() {
+          try {
+            console.log('Requesting permissions..')
+            await Audio.requestPermissionsAsync()
+            await Audio.setAudioModeAsync({
+              allowsRecordingIOS: true,
+              playsInSilentModeIOS: true,
+            })
+            console.log('Starting recording..')
+            const recording = new Audio.Recording()
+            await recording.prepareToRecordAsync(
+              Audio.RECORDING_OPTIONS_PRESET_HIGH_QUALITY
+            )
+            await recording.startAsync()
+            setRecording(recording)
+            console.log('Recording started')
+          } catch (err) {
+            console.error('Failed to start recording', err)
           }
-        , // function for file pick or take pic
+        }, // function for file pick or take pic
         'Send Image': () => {
-          console.log('An image');
+          console.log('An image')
         },
         Cancel: () => {
-          console.log('Cancel');
+          console.log('Cancel')
         },
       }}
-      optionTintColor="#222B45"
+      optionTintColor='#222B45'
     />
-  );
-  
-
-  const selectFile = async () => {
-    // Pick a single file
-    try {
-      const res = await DocumentPicker.pick({
-        type: [DocumentPicker.types.images],
-      })
-      console.log(
-        res.uri,
-        res.type, // mime type
-        res.name,
-        res.size
-      )
-    } catch (err) {
-      if (DocumentPicker.isCancel(err)) {
-        // User cancelled the picker, exit any dialogs or menus and move on
-      } else {
-        throw err
-      }
-    }
-
-    // Pick multiple files
-    try {
-      const results = await DocumentPicker.pickMultiple({
-        type: [DocumentPicker.types.images],
-      })
-      for (const res of results) {
-        console.log(
-          res.uri,
-          res.type, // mime type
-          res.name,
-          res.size
-        )
-      }
-    } catch (err) {
-      if (DocumentPicker.isCancel(err)) {
-        // User cancelled the picker, exit any dialogs or menus and move on
-      } else {
-        throw err
-      }
-    }
-  }
+  )
 
   const onSend = useCallback((messages = []) => {
+    // messages[0].text = 'test'
+    // console.log(messages[0].text)
     setMessages((previousMessages) =>
       GiftedChat.append(previousMessages, messages)
     )
@@ -185,6 +133,10 @@ const ChatScreen = ({ navigation }) => {
             rounded
             source={{ uri: auth?.currentUser?.photoURL }}
             onPress={() => navigation.navigate('Profile')}
+            avatarStyle={{
+              borderWidth: 1,
+              borderColor: 'white',
+            }}
           />
         </TouchableOpacity>
       ),
@@ -194,19 +146,26 @@ const ChatScreen = ({ navigation }) => {
             marginRight: 15,
           }}
           onPress={signOut}>
-          <AntDesign name='logout' size={24} color='black' />
+          <AntDesign name='logout' size={24} color={itemColor} />
         </TouchableOpacity>
       ),
     })
   }, [])
+
+  useEffect(() => {
+    if (currentTheme !== undefined) {
+      setItemColor(currentTheme.text)
+    }
+  }, [currentTheme])
 
   return (
     <GiftedChat
       messages={messages}
       showAvatarForEveryMessage={true}
       onSend={(messages) => onSend(messages)}
-      renderInputToolbar={props => customtInputToolbar(props)}
+      renderInputToolbar={(props) => customtInputToolbar(props)}
       renderActions={renderActions}
+      // textProps={{ style: { color: colors.text } }}
       user={{
         _id: auth?.currentUser?.email,
         name: auth?.currentUser?.displayName,
