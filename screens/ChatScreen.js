@@ -58,7 +58,7 @@ const ChatScreen = ({ navigation }) => {
         <SimpleLineIcons name="menu" size={24} color="black" />
       )}
       options={{
-        'Record a voice message':
+        'Record a voice':
           async function startRecording() {
             try {
               console.log('Requesting permissions..');
@@ -77,7 +77,10 @@ const ChatScreen = ({ navigation }) => {
               console.error('Failed to start recording', err);
             }
           }
-        ,
+        , // function for file pick or take pic
+        'Send Image': () => {
+          console.log('An image');
+        },
         Cancel: () => {
           console.log('Cancel');
         },
