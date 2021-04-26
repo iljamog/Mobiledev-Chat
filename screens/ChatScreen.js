@@ -1,13 +1,17 @@
 import React, { useLayoutEffect, useState, useCallback, useEffect } from 'react'
-import { View, Text, Touchable } from 'react-native'
-import { GiftedChat } from 'react-native-gifted-chat'
+import { View, Text, Touchable, Image } from 'react-native'
+import { GiftedChat, InputToolbar, Actions } from 'react-native-gifted-chat'
 import { auth, db } from '../firebase'
-import { AntDesign } from '@expo/vector-icons'
+import { AntDesign, SimpleLineIcons } from '@expo/vector-icons'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import { Avatar } from 'react-native-elements/dist/avatar/Avatar'
 import DocumentPicker from 'react-native-document-picker'
+import { Audio } from 'expo-av';
+
+
 const ChatScreen = ({ navigation }) => {
   const [messages, setMessages] = useState([])
+  const [recording, setRecording] = React.useState();
 
   //   useEffect(() => {
   //     setMessages([
@@ -23,6 +27,65 @@ const ChatScreen = ({ navigation }) => {
   //       },
   //     ])
   //   }, [])
+
+  // Customizing the input bar
+
+  const customtInputToolbar = props => {
+    return (
+      <InputToolbar
+        {...props}
+        containerStyle={{
+          backgroundColor: "white",
+        }}
+      />
+    );
+  };
+
+  // menu next to text input area
+  const renderActions = (props) => (
+    <Actions
+      {...props}
+      containerStyle={{
+        width: 44,
+        height: 44,
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginLeft: 4,
+        marginRight: 4,
+        marginBottom: 0,
+      }}
+      icon={() => (
+        <SimpleLineIcons name="menu" size={24} color="black" />
+      )}
+      options={{
+        'Record a voice message':
+          async function startRecording() {
+            try {
+              console.log('Requesting permissions..');
+              await Audio.requestPermissionsAsync();
+              await Audio.setAudioModeAsync({
+                allowsRecordingIOS: true,
+                playsInSilentModeIOS: true,
+              }); 
+              console.log('Starting recording..');
+              const recording = new Audio.Recording();
+              await recording.prepareToRecordAsync(Audio.RECORDING_OPTIONS_PRESET_HIGH_QUALITY);
+              await recording.startAsync(); 
+              setRecording(recording);
+              console.log('Recording started');
+            } catch (err) {
+              console.error('Failed to start recording', err);
+            }
+          }
+        ,
+        Cancel: () => {
+          console.log('Cancel');
+        },
+      }}
+      optionTintColor="#222B45"
+    />
+  );
+  
 
   const selectFile = async () => {
     // Pick a single file
@@ -139,6 +202,8 @@ const ChatScreen = ({ navigation }) => {
       messages={messages}
       showAvatarForEveryMessage={true}
       onSend={(messages) => onSend(messages)}
+      renderInputToolbar={props => customtInputToolbar(props)}
+      renderActions={renderActions}
       user={{
         _id: auth?.currentUser?.email,
         name: auth?.currentUser?.displayName,
