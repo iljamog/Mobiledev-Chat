@@ -1,11 +1,11 @@
 import React, { useLayoutEffect, useState, useCallback, useEffect } from 'react'
-import { View, Text } from 'react-native'
+import { View, Text, Touchable } from 'react-native'
 import { GiftedChat } from 'react-native-gifted-chat'
 import { auth, db } from '../firebase'
 import { AntDesign } from '@expo/vector-icons'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import { Avatar } from 'react-native-elements/dist/avatar/Avatar'
-
+import DocumentPicker from 'react-native-document-picker'
 const ChatScreen = ({ navigation }) => {
   const [messages, setMessages] = useState([])
 
@@ -23,6 +23,48 @@ const ChatScreen = ({ navigation }) => {
   //       },
   //     ])
   //   }, [])
+
+  const selectFile = async () => {
+    // Pick a single file
+    try {
+      const res = await DocumentPicker.pick({
+        type: [DocumentPicker.types.images],
+      })
+      console.log(
+        res.uri,
+        res.type, // mime type
+        res.name,
+        res.size
+      )
+    } catch (err) {
+      if (DocumentPicker.isCancel(err)) {
+        // User cancelled the picker, exit any dialogs or menus and move on
+      } else {
+        throw err
+      }
+    }
+
+    // Pick multiple files
+    try {
+      const results = await DocumentPicker.pickMultiple({
+        type: [DocumentPicker.types.images],
+      })
+      for (const res of results) {
+        console.log(
+          res.uri,
+          res.type, // mime type
+          res.name,
+          res.size
+        )
+      }
+    } catch (err) {
+      if (DocumentPicker.isCancel(err)) {
+        // User cancelled the picker, exit any dialogs or menus and move on
+      } else {
+        throw err
+      }
+    }
+  }
 
   const onSend = useCallback((messages = []) => {
     setMessages((previousMessages) =>
@@ -48,6 +90,10 @@ const ChatScreen = ({ navigation }) => {
       })
   }
 
+  // const toProfileScreen = () => {
+  //   navigation.replace('Profile')
+  // }
+
   useLayoutEffect(() => {
     const unsubscribe = db
       .collection('chats')
@@ -68,9 +114,13 @@ const ChatScreen = ({ navigation }) => {
   useLayoutEffect(() => {
     navigation.setOptions({
       headerLeft: () => (
-        <View style={{ marginLeft: 10 }}>
-          <Avatar rounded source={{ uri: auth?.currentUser?.photoURL }} />
-        </View>
+        <TouchableOpacity style={{ marginLeft: 10 }}>
+          <Avatar
+            rounded
+            source={{ uri: auth?.currentUser?.photoURL }}
+            onPress={() => navigation.navigate('Profile')}
+          />
+        </TouchableOpacity>
       ),
       headerRight: () => (
         <TouchableOpacity
