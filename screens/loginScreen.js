@@ -69,8 +69,8 @@ export default LoginScreen
 
 const styles = StyleSheet.create({
   button: {
-    width: 200,
-    width: '40%',
+   //width: 200,
+    width: '100%',
     borderRadius: 25,
   },
   container: {
