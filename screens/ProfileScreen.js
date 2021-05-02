@@ -28,7 +28,6 @@ const ProfileScreen = ({ navigation }) => {
       // }
     } catch (e) {
       console.log(e)
-      storeDarkmode(false)
     }
   }
 
@@ -50,14 +49,11 @@ const ProfileScreen = ({ navigation }) => {
         trackColor={{ false: '#767577', true: '#81b0ff' }}
         thumbColor={darkMode ? '#f5dd4b' : '#f4f3f4'}
         ios_backgroundColor='#3e3e3e'
-        // onValueChange={handleSwitch}
+        onValueChange={() => storeDarkmode(!darkMode)}
         style={styles.switch}
         value={darkMode}
       />
-      <Button onPress={() => storeDarkmode(!darkMode)}>Test</Button>
-      {/* <Button onPress={() => console.log(darkMode)} style={{ marginTop: 30 }}>
-        Test
-      </Button> */}
+      {/* <Button onPress={() => storeDarkmode(!darkMode)}>Test</Button> */}
     </View>
   )
 }
