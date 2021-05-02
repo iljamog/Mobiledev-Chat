@@ -47,7 +47,7 @@ const ProfileScreen = ({ navigation }) => {
       />
       <Switch
         trackColor={{ false: '#767577', true: '#81b0ff' }}
-        thumbColor={darkMode ? '#f5dd4b' : '#f4f3f4'}
+        thumbColor={darkMode ? '#f5dd4b' : '#ffffff'}
         ios_backgroundColor='#3e3e3e'
         onValueChange={() => storeDarkmode(!darkMode)}
         style={styles.switch}
