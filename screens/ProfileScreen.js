@@ -49,12 +49,9 @@ const ProfileScreen = ({ navigation }) => {
   useEffect(() => {
     const getNotes = async () => {
       try {
-        console.log('Fetching notes')
         const notesLS = await AsyncStorage.getItem('notes')
         if (notesLS) {
           setNotes(notesLS)
-        } else {
-          console.log('Didnt find notes')
         }
       } catch (error) {
         // saving error
