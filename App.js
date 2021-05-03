@@ -1,17 +1,22 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { createStackNavigator } from '@react-navigation/stack'
-import { NavigationContainer, StackActions } from '@react-navigation/native'
+import {
+  NavigationContainer,
+  StackActions,
+  DefaultTheme,
+  DarkTheme,
+  useTheme,
+} from '@react-navigation/native'
 import LoginScreen from './screens/LoginScreen'
 import RegisterScreen from './screens/RegisterScreen'
 import ChatScreen from './screens/ChatScreen'
 import ProfileScreen from './screens/ProfileScreen'
 import { AppearanceProvider, useColorScheme } from 'react-native-appearance'
-import { DefaultTheme, DarkTheme } from '@react-navigation/native'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 const Stack = createStackNavigator()
 
 export default function App() {
-  const scheme = useColorScheme()
   return (
     <AppearanceProvider>
       <NavigationContainer theme={DefaultTheme}>
