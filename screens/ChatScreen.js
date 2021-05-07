@@ -48,13 +48,13 @@ const ChatScreen = ({ navigation }) => {
   const renderAccessory = (props) => (
       <View style={{ flexDirection:'row'}} >
 
-        <View style={{flex:1, alignSelf:'center'}}>
+        <View style={{flex:1}}>
           <TouchableOpacity style = {{justifyContent:'center', alignItems:'center'}}>
             <FontAwesome name="microphone" size={24} color="black" />
           </TouchableOpacity>
         </View>
 
-        <View style={{flex:1, alignSelf:'center'}}>
+        <View style={{flex:1}}>
           <TouchableOpacity style = {{ justifyContent:'center', alignItems:'center' }}>
             <Entypo name="camera" size={24} color="black" />
           </TouchableOpacity>
