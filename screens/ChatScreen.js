@@ -15,10 +15,9 @@ import { Audio } from 'expo-av'
 
 const ChatScreen = ({ navigation }) => {
   const [messages, setMessages] = useState([])
-  const [recording, setRecording] = useState()
   const [itemColor, setItemColor] = useState('black')
   const { currentTheme } = useTheme()
-
+  const [recording, setRecording] = React.useState();
   // Customizing the input bar
 
   const customtInputToolbar = (props) => {
@@ -49,7 +48,11 @@ const ChatScreen = ({ navigation }) => {
       <View style={{ flexDirection:'row'}} >
 
         <View style={{flex:1}}>
-          <TouchableOpacity style = {{justifyContent:'center', alignItems:'center'}}>
+          <TouchableOpacity 
+          style = {{justifyContent:'center', alignItems:'center'}}
+          onLongPress={() => startRecording()}
+          onPressOut={() => stopRecording()}
+          >
             <FontAwesome name="microphone" size={24} color="black" />
           </TouchableOpacity>
         </View>
@@ -62,52 +65,58 @@ const ChatScreen = ({ navigation }) => {
 
       </View>
   )
+  //functions for recording
 
-  // menu next to text input area
-  // const renderActions = (props) => (
-  //   <Actions
-  //     {...props}
-  //     containerStyle={{
-  //       width: 44,
-  //       height: 44,
-  //       alignItems: 'center',
-  //       justifyContent: 'center',
-  //       marginLeft: 4,
-  //       marginRight: 4,
-  //       marginBottom: 0,
-  //     }}
-  //     icon={() => <SimpleLineIcons name='menu' size={24} color={itemColor} />}
-  //     options={{
-  //       'Voice record': async function startRecording() {
-  //         try {
-  //           console.log('Requesting permissions..')
-  //           await Audio.requestPermissionsAsync()
-  //           await Audio.setAudioModeAsync({
-  //             allowsRecordingIOS: true,
-  //             playsInSilentModeIOS: true,
-  //           })
-  //           console.log('Starting recording..')
-  //           const recording = new Audio.Recording()
-  //           await recording.prepareToRecordAsync(
-  //             Audio.RECORDING_OPTIONS_PRESET_HIGH_QUALITY
-  //           )
-  //           await recording.startAsync()
-  //           setRecording(recording)
-  //           console.log('Recording started')
-  //         } catch (err) {
-  //           console.error('Failed to start recording', err)
-  //         }
-  //       }, // function for file pick or take pic
-  //       'Send Image': () => {
-  //         console.log('An image')
-  //       },
-  //       Cancel: () => {
-  //         console.log('Cancel')
-  //       },
-  //     }}
-  //     optionTintColor='#222B45'
-  //   />
-  // )
+  async function startRecording() {
+    try {
+      console.log('Requesting permissions..');
+      await Audio.requestPermissionsAsync();
+      await Audio.setAudioModeAsync({
+        allowsRecordingIOS: true,
+        playsInSilentModeIOS: true,
+      }); 
+      console.log('Starting recording..');
+      const recording = new Audio.Recording();
+      await recording.prepareToRecordAsync(Audio.RECORDING_OPTIONS_PRESET_HIGH_QUALITY);
+      await recording.startAsync(); 
+      setRecording(recording);
+      console.log('Recording started');
+    } catch (err) {
+      console.error('Failed to start recording', err);
+    }
+  }
+
+  async function stopRecording() {
+    console.log('Stopping recording..');
+    setRecording(undefined);
+    await recording.stopAndUnloadAsync();
+    const uri = recording.getURI(); 
+    console.log('Recording stopped and stored at', uri);
+    
+    // playRecording(uri);
+  }
+
+  // async function playRecording(uri){
+  // const soundObject = new Audio.Sound()
+
+  //           try {
+  //             let source = uri
+  //             await soundObject.loadAsync(source)
+  //             await soundObject
+  //               .playAsync()
+  //               .then(async playbackStatus => {
+  //                 setTimeout(() => {
+  //                   soundObject.unloadAsync()
+  //                 }, playbackStatus.playableDurationMillis)
+  //               })
+  //               .catch(error => {
+  //                 console.log(error)
+  //               })
+  //           } catch (error) {
+  //             console.log(error)
+  //           }
+  // }
+
 
   const onSend = useCallback((messages = []) => {
     // messages[0].text = 'test'
