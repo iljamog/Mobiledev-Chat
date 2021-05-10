@@ -274,17 +274,6 @@ const ChatScreen = ({ navigation }) => {
     })
   }, [])
 
-  const signOut = () => {
-    auth
-      .signOut()
-      .then(() => {
-        navigation.replace('Profile')
-      })
-      .catch((error) => {
-        console.log(error)
-      })
-  }
-
   useLayoutEffect(() => {
     const unsubscribe = db
       .collection('chats')

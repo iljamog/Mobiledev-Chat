@@ -1,13 +1,5 @@
 import React, { useEffect, useState, useLayoutEffect } from 'react'
-import {
-  View,
-  Text,
-  StyleSheet,
-  Image,
-  Switch,
-  Form,
-  TextInput,
-} from 'react-native'
+import { View, Text, StyleSheet, Image, TextInput } from 'react-native'
 import { auth } from '../firebase'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 
