@@ -8,6 +8,17 @@ import {
   Send,
 } from 'react-native-gifted-chat'
 import { auth, db } from '../firebase'
+
+//import { utils } from '@react-native-firebase/app'
+import firebase from 'firebase/app'
+import 'firebase/storage'
+import { AntDesign, SimpleLineIcons, FontAwesome, Entypo, Feather } from '@expo/vector-icons'
+import { TouchableOpacity } from 'react-native-gesture-handler'
+import { Avatar } from 'react-native-elements/dist/avatar/Avatar'
+import { Audio } from 'expo-av'
+import * as FileSystem from 'expo-file-system';
+import moment from 'moment'
+
 import {
   AntDesign,
   SimpleLineIcons,
@@ -19,6 +30,7 @@ import { TouchableOpacity } from 'react-native-gesture-handler'
 import { Avatar } from 'react-native-elements/dist/avatar/Avatar'
 import { Audio } from 'expo-av'
 import * as FileSystem from 'expo-file-system'
+
 
 const ChatScreen = ({ navigation }) => {
   const [messages, setMessages] = useState([])
@@ -108,6 +120,23 @@ const ChatScreen = ({ navigation }) => {
       </View>
     </View>
   )
+
+  const renderMessageAudio = (props) => {
+      const { currentMessage } = props
+      const { sound: playbackObject } = async () => { await Audio.Sound.createAsync(
+        { uri: url },
+        { shouldPlay: true }
+      )}
+      //audiomessage bubble
+      return (
+        <View style={{ padding: 20 }}>
+          <TouchableOpacity style = {{ justifyContent:'center', alignItems:'center' }}>
+            <AntDesign name="playcircleo" size={24} color="black" />
+          </TouchableOpacity>
+        </View>
+      )
+    }
+
   //functions for recording voice message
 
   const startRecording = async () => {
@@ -172,61 +201,80 @@ const ChatScreen = ({ navigation }) => {
     )
     setSound(_sound)
     setIsRecording(false)
-    await _sound.playAsync()
-    //Your sound is playing!
-    console.log('playing')
-    //Don't forget to unload the sound from memory
-    //when you are done using the Sound object
-    await _sound.unloadAsync()
+
+      // await _sound.playAsync();
+      //   //Your sound is playing!
+      // console.log('playing')  
+      //   //Don't forget to unload the sound from memory
+      //   //when you are done using the Sound object
+      // await _sound.unloadAsync();
+      uploadAudio()
+
   }
 
   // uploading the audio recording to firebase storage
 
-  // const uploadAudio = async () => {
-  //   const uri = recording.getURI();
-  //   try {
-  //     const blob = await new Promise((resolve, reject) => {
-  //       const xhr = new XMLHttpRequest();
-  //       xhr.onload = () => {
-  //         try {
-  //           resolve(xhr.response);
-  //         } catch (error) {
-  //           console.log("error:", error);
-  //         }
-  //       };
-  //       xhr.onerror = (e) => {
-  //         console.log(e);
-  //         reject(new TypeError("Network request failed"));
-  //       };
-  //       xhr.responseType = "blob";
-  //       xhr.open("GET", uri, true);
-  //       xhr.send(null);
-  //     });
-  //     if (blob != null) {
-  //       const uriParts = uri.split(".");
-  //       const fileType = uriParts[uriParts.length - 1];
-  //       firebase
-  //         .storage()
-  //         .ref()
-  //         .child(`nameOfTheFile.${fileType}`)
-  //         .put(blob, {
-  //           contentType: `audio/${fileType}`,
-  //         })
-  //         .then(() => {
-  //           console.log("Sent!");
-  //         })
-  //         .catch((e) => console.log("error:", e));
-  //     } else {
-  //       console.log("erroor with blob");
-  //     }
-  //   } catch (error) {
-  //     console.log("error:", error);
-  //   }
-  // };
+
+    const uploadAudio = async () => {
+      const uri = recording.getURI();
+      try {
+        const blob = await new Promise((resolve, reject) => {
+          const xhr = new XMLHttpRequest();
+          xhr.onload = () => {
+            try {
+              resolve(xhr.response);
+            } catch (error) {
+              console.log("error:", error);
+            }
+          };
+          xhr.onerror = (e) => {
+            console.log(e);
+            reject(new TypeError("Network request failed"));
+          };
+          xhr.responseType = "blob";
+          xhr.open("GET", uri, true);
+          xhr.send(null);
+        });
+        if (blob != null) {
+          const uriParts = uri.split(".");
+          const fileType = uriParts[uriParts.length - 1];
+          let time = moment().utcOffset('+03:00').format('DD.MM.YYYY hh:mm:ss a')
+          const nameOfTheFile = auth?.currentUser?.displayName + ' ' + time 
+          firebase
+            .storage()
+            .ref(`/voice/`)
+            .child(`${nameOfTheFile}.${fileType}`)
+            .put(blob, {
+              contentType: `audio/${fileType}`,
+            }) // get url of the voice message
+            .then( async () => {
+              console.log("File sent!");
+              const url = await firebase
+              .storage()
+              .ref(`/voice/${nameOfTheFile}.${fileType}`)
+              .getDownloadURL();
+              //console.log("uri:", url);
+              
+              // create a message with audio 
+              //onSend({text: url})
+              
+              
+            })
+            .catch((e) => console.log("error:", e));
+
+            //link to file
+            
+        } else {
+          console.log("erroor with blob");
+        }
+      } catch (error) {
+        console.log("error:", error);
+      }
+      
+    };
+
 
   const onSend = useCallback((messages = []) => {
-    // messages[0].text = 'test'
-    // console.log(messages[0].text)
     setMessages((previousMessages) =>
       GiftedChat.append(previousMessages, messages)
     )
@@ -273,10 +321,9 @@ const ChatScreen = ({ navigation }) => {
       showAvatarForEveryMessage={true}
       onSend={(messages) => onSend(messages)}
       renderInputToolbar={(props) => customtInputToolbar(props)}
-      //renderActions={renderActions}
       renderAccessory={renderAccessory}
       renderSend={renderSend}
-      // textProps={{ style: { color: colors.text } }}
+      renderMessageAudio={renderMessageAudio}
       user={{
         _id: auth?.currentUser?.email,
         name: auth?.currentUser?.displayName,
