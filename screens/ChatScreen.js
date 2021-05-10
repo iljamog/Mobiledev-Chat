@@ -69,8 +69,6 @@ const ChatScreen = ({ route, navigation }) => {
           backgroundColor: 'currentTheme.colors',
         }}
         accessoryStyle={{
-          borderWidth: 2,
-          borderColor: 'red',
           width: '100%',
           height: '45%',
         }}
