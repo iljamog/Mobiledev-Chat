@@ -22,12 +22,8 @@ const LoginScreen = ({ navigation }) => {
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(function (user) {
-      if (user) {
-        navigation.replace('Chat')
-      } else {
-        navigation.canGoBack() && navigation.popToTop()
-        // No user is signed in.
-      }
+      navigation.canGoBack() && navigation.popToTop()
+      // No user is signed in.
     })
 
     return unsubscribe
@@ -69,7 +65,7 @@ export default LoginScreen
 
 const styles = StyleSheet.create({
   button: {
-   //width: 200,
+    //width: 200,
     width: '100%',
     borderRadius: 25,
   },
