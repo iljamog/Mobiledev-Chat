@@ -8,11 +8,17 @@ import {
   Send,
 } from 'react-native-gifted-chat'
 import { auth, db } from '../firebase'
-import { AntDesign, SimpleLineIcons, FontAwesome, Entypo, Feather } from '@expo/vector-icons'
+import {
+  AntDesign,
+  SimpleLineIcons,
+  FontAwesome,
+  Entypo,
+  Feather,
+} from '@expo/vector-icons'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import { Avatar } from 'react-native-elements/dist/avatar/Avatar'
 import { Audio } from 'expo-av'
-import * as FileSystem from 'expo-file-system';
+import * as FileSystem from 'expo-file-system'
 
 const ChatScreen = ({ navigation }) => {
   const [messages, setMessages] = useState([])
@@ -26,7 +32,7 @@ const ChatScreen = ({ navigation }) => {
   // Recording settings
   const recordingSettings = {
     android: {
-      extension: ".m4a",
+      extension: '.m4a',
       outputFormat: Audio.RECORDING_OPTION_ANDROID_OUTPUT_FORMAT_MPEG_4,
       audioEncoder: Audio.RECORDING_OPTION_ANDROID_AUDIO_ENCODER_AAC,
       sampleRate: 44100,
@@ -34,7 +40,7 @@ const ChatScreen = ({ navigation }) => {
       bitRate: 128000,
     },
     ios: {
-      extension: ".m4a",
+      extension: '.m4a',
       outputFormat: Audio.RECORDING_OPTION_IOS_OUTPUT_FORMAT_MPEG4AAC,
       audioQuality: Audio.RECORDING_OPTION_IOS_AUDIO_QUALITY_MIN,
       sampleRate: 44100,
@@ -56,55 +62,51 @@ const ChatScreen = ({ navigation }) => {
           flex: 1,
           backgroundColor: 'currentTheme.colors',
         }}
-        accessoryStyle = {{
-          
+        accessoryStyle={{
           borderWidth: 2,
           borderColor: 'red',
           width: '100%',
-          height: '45%'
+          height: '45%',
         }}
-        primaryStyle = {{
+        primaryStyle={{
           alignItems: 'flex-end',
         }}
-
       />
     )
   }
   // Send icon props
   const renderSend = (props) => (
-        <Send
-            {...props}
-        >
-            <View style={{
-              marginRight: 10,
-              marginBottom: 8,
-              marginLeft:'78%'}}>
-                <Feather name="send" size={24} color="black" />
-            </View>
-        </Send>
-    )
+    <Send {...props}>
+      <View
+        style={{
+          marginRight: 10,
+          marginBottom: 8,
+          marginLeft: '78%',
+        }}>
+        <Feather name='send' size={24} color='black' />
+      </View>
+    </Send>
+  )
 
   // Mic and Camera icons below input line.
   const renderAccessory = (props) => (
-      <View style={{ flexDirection:'row'}} >
-
-        <View style={{flex:1}}>
-          <TouchableOpacity 
-          style = {{justifyContent:'center', alignItems:'center'}}
+    <View style={{ flexDirection: 'row' }}>
+      <View style={{ flex: 1 }}>
+        <TouchableOpacity
+          style={{ justifyContent: 'center', alignItems: 'center' }}
           onLongPress={() => startRecording()}
-          onPressOut={() => stopRecording()}
-          >
-            <FontAwesome name="microphone" size={24} color="black" />
-          </TouchableOpacity>
-        </View>
-
-        <View style={{flex:1}}>
-          <TouchableOpacity style = {{ justifyContent:'center', alignItems:'center' }}>
-            <Entypo name="camera" size={24} color="black" />
-          </TouchableOpacity>
-        </View>
-
+          onPressOut={() => stopRecording()}>
+          <FontAwesome name='microphone' size={24} color='black' />
+        </TouchableOpacity>
       </View>
+
+      <View style={{ flex: 1 }}>
+        <TouchableOpacity
+          style={{ justifyContent: 'center', alignItems: 'center' }}>
+          <Entypo name='camera' size={24} color='black' />
+        </TouchableOpacity>
+      </View>
+    </View>
   )
   //functions for recording voice message
 
@@ -132,10 +134,10 @@ const ChatScreen = ({ navigation }) => {
       await _recording.prepareToRecordAsync(recordingSettings)
       setRecording(_recording)
       await _recording.startAsync()
-      console.log("recording")
+      console.log('recording')
       setIsRecording(true)
     } catch (error) {
-      console.log("error while recording:", error)
+      console.log('error while recording:', error)
     }
   }
 
@@ -146,7 +148,7 @@ const ChatScreen = ({ navigation }) => {
     } catch (error) {
       // Do nothing -- we are already unloaded.
     }
-      
+
     const info = await FileSystem.getInfoAsync(recording.getURI())
     console.log(`FILE INFO: ${JSON.stringify(info)}`)
     await Audio.setAudioModeAsync({
@@ -170,57 +172,57 @@ const ChatScreen = ({ navigation }) => {
     )
     setSound(_sound)
     setIsRecording(false)
-        await _sound.playAsync();
-        //Your sound is playing!
-        console.log('playing')  
-        //Don't forget to unload the sound from memory
-        //when you are done using the Sound object
-      await _sound.unloadAsync();
+    await _sound.playAsync()
+    //Your sound is playing!
+    console.log('playing')
+    //Don't forget to unload the sound from memory
+    //when you are done using the Sound object
+    await _sound.unloadAsync()
   }
 
   // uploading the audio recording to firebase storage
 
-    // const uploadAudio = async () => {
-    //   const uri = recording.getURI();
-    //   try {
-    //     const blob = await new Promise((resolve, reject) => {
-    //       const xhr = new XMLHttpRequest();
-    //       xhr.onload = () => {
-    //         try {
-    //           resolve(xhr.response);
-    //         } catch (error) {
-    //           console.log("error:", error);
-    //         }
-    //       };
-    //       xhr.onerror = (e) => {
-    //         console.log(e);
-    //         reject(new TypeError("Network request failed"));
-    //       };
-    //       xhr.responseType = "blob";
-    //       xhr.open("GET", uri, true);
-    //       xhr.send(null);
-    //     });
-    //     if (blob != null) {
-    //       const uriParts = uri.split(".");
-    //       const fileType = uriParts[uriParts.length - 1];
-    //       firebase
-    //         .storage()
-    //         .ref()
-    //         .child(`nameOfTheFile.${fileType}`)
-    //         .put(blob, {
-    //           contentType: `audio/${fileType}`,
-    //         })
-    //         .then(() => {
-    //           console.log("Sent!");
-    //         })
-    //         .catch((e) => console.log("error:", e));
-    //     } else {
-    //       console.log("erroor with blob");
-    //     }
-    //   } catch (error) {
-    //     console.log("error:", error);
-    //   }
-    // };
+  // const uploadAudio = async () => {
+  //   const uri = recording.getURI();
+  //   try {
+  //     const blob = await new Promise((resolve, reject) => {
+  //       const xhr = new XMLHttpRequest();
+  //       xhr.onload = () => {
+  //         try {
+  //           resolve(xhr.response);
+  //         } catch (error) {
+  //           console.log("error:", error);
+  //         }
+  //       };
+  //       xhr.onerror = (e) => {
+  //         console.log(e);
+  //         reject(new TypeError("Network request failed"));
+  //       };
+  //       xhr.responseType = "blob";
+  //       xhr.open("GET", uri, true);
+  //       xhr.send(null);
+  //     });
+  //     if (blob != null) {
+  //       const uriParts = uri.split(".");
+  //       const fileType = uriParts[uriParts.length - 1];
+  //       firebase
+  //         .storage()
+  //         .ref()
+  //         .child(`nameOfTheFile.${fileType}`)
+  //         .put(blob, {
+  //           contentType: `audio/${fileType}`,
+  //         })
+  //         .then(() => {
+  //           console.log("Sent!");
+  //         })
+  //         .catch((e) => console.log("error:", e));
+  //     } else {
+  //       console.log("erroor with blob");
+  //     }
+  //   } catch (error) {
+  //     console.log("error:", error);
+  //   }
+  // };
 
   const onSend = useCallback((messages = []) => {
     // messages[0].text = 'test'
@@ -241,16 +243,12 @@ const ChatScreen = ({ navigation }) => {
     auth
       .signOut()
       .then(() => {
-        navigation.replace('Login')
+        navigation.replace('Profile')
       })
       .catch((error) => {
-        // An error happened.
+        console.log(error)
       })
   }
-
-  // const toProfileScreen = () => {
-  //   navigation.replace('Profile')
-  // }
 
   useLayoutEffect(() => {
     const unsubscribe = db
@@ -268,39 +266,6 @@ const ChatScreen = ({ navigation }) => {
       )
     return unsubscribe
   }, [])
-
-  useLayoutEffect(() => {
-    navigation.setOptions({
-      headerLeft: () => (
-        <TouchableOpacity style={{ marginLeft: 10 }}>
-          <Avatar
-            rounded
-            source={{ uri: auth?.currentUser?.photoURL }}
-            onPress={() => navigation.navigate('Profile')}
-            avatarStyle={{
-              borderWidth: 1,
-              borderColor: 'white',
-            }}
-          />
-        </TouchableOpacity>
-      ),
-      headerRight: () => (
-        <TouchableOpacity
-          style={{
-            marginRight: 15,
-          }}
-          onPress={signOut}>
-          <AntDesign name='logout' size={24} color={itemColor} />
-        </TouchableOpacity>
-      ),
-    })
-  }, [])
-
-  useEffect(() => {
-    if (currentTheme !== undefined) {
-      setItemColor(currentTheme.text)
-    }
-  }, [currentTheme])
 
   return (
     <GiftedChat
