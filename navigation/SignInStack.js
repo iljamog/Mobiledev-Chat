@@ -17,14 +17,14 @@ export default function SignInStack() {
           name='Chat'
           component={ChatScreen}
           options={({ navigation }) => ({
-            title: 'Awesome app',
+            title: 'Chat',
           })}
         />
         <Drawer.Screen
           name='Profile'
           component={ProfileScreen}
           options={({ navigation }) => ({
-            title: 'Awesome app',
+            title: 'Profile',
           })}
         />
       </Drawer.Navigator>
