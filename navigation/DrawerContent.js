@@ -61,7 +61,9 @@ export function DrawerContent(props) {
                 <Icon name='account-group-outline' color={color} size={size} />
               )}
               label='Friends'
-              onPress={() => {}}></DrawerItem>
+              onPress={() => {
+                props.navigation.navigate('Messages')
+              }}></DrawerItem>
             <DrawerItem
               icon={({ color, size }) => (
                 <Icon name='chat-outline' color={color} size={size} />

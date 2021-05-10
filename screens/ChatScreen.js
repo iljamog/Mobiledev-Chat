@@ -26,14 +26,14 @@ import { Avatar } from 'react-native-elements/dist/avatar/Avatar'
 import { Audio } from 'expo-av'
 import * as FileSystem from 'expo-file-system'
 
-const ChatScreen = ({ navigation }) => {
+const ChatScreen = ({ route, navigation }) => {
   const [messages, setMessages] = useState([])
   const [itemColor, setItemColor] = useState('black')
-  const { currentTheme } = useTheme()
   const [isRecording, setIsRecording] = useState(false)
   const [recording, setRecording] = useState(null)
   const [sound, setSound] = useState(null)
   const [isPlaying, setIsPlaying] = useState(false)
+  const { userName } = route.params
 
   // Recording settings
   const recordingSettings = {
@@ -272,6 +272,7 @@ const ChatScreen = ({ navigation }) => {
       text,
       user,
     })
+    console.log(route)
   }, [])
 
   useLayoutEffect(() => {
