@@ -18,46 +18,41 @@ const Messages = [
     id: '1',
     userName: 'Chat 1',
     userImg:
-      'https://cdn.business2community.com/wp-content/uploads/2017/08/blank-profile-picture-973460_640.png',
+      'https://about.fb.com/wp-content/uploads/2018/11/fb-hero-image-001.jpeg?fit=1920%2C1080',
     messageTime: '4 mins ago',
-    messageText:
-      'Hey there, this is my test for a post of my social app in React Native.',
+    messageText: 'Facebook V2',
   },
   {
     id: '2',
     userName: 'Chat 2',
     userImg:
-      'https://cdn.business2community.com/wp-content/uploads/2017/08/blank-profile-picture-973460_640.png',
+      'https://yt3.ggpht.com/ytc/AAUvwnjDwLJeWs_jcgoVvQpC7YZxWMwP-N__UH-98dxGyw=s900-c-k-c0x00ffffff-no-rj',
     messageTime: '2 hours ago',
-    messageText:
-      'Hey there, this is my test for a post of my social app in React Native.',
+    messageText: 'Best yt videos in the world!!!',
   },
   {
     id: '3',
     userName: 'Chat 3',
     userImg:
-      'https://cdn.business2community.com/wp-content/uploads/2017/08/blank-profile-picture-973460_640.png',
+      'https://images.contentstack.io/v3/assets/blt731acb42bb3d1659/bltcfa4652c8d383f56/5e21837f63d1b6503160d39b/Home-page.jpg',
     messageTime: '1 hours ago',
-    messageText:
-      'Hey there, this is my test for a post of my social app in React Native.',
+    messageText: 'League of legends gaming chat',
   },
   {
     id: '4',
     userName: 'Chat 4',
     userImg:
-      'https://cdn.business2community.com/wp-content/uploads/2017/08/blank-profile-picture-973460_640.png',
+      'https://specials-images.forbesimg.com/imageserve/5ea6d49e165a170006a5d625/960x0.jpg?fit=scale',
     messageTime: '1 day ago',
-    messageText:
-      'Hey there, this is my test for a post of my social app in React Native.',
+    messageText: 'Crypto channel',
   },
   {
     id: '5',
     userName: 'Chat 5',
     userImg:
-      'https://cdn.business2community.com/wp-content/uploads/2017/08/blank-profile-picture-973460_640.png',
+      'https://images.theconversation.com/files/290710/original/file-20190903-175663-lqb3z6.jpg?ixlib=rb-1.1.0&q=45&auto=format&w=1200&h=1200.0&fit=crop',
     messageTime: '2 days ago',
-    messageText:
-      'Hey there, this is my test for a post of my social app in React Native.',
+    messageText: 'monkey',
   },
 ]
 
@@ -69,16 +64,31 @@ const MessagesScreen = ({ navigation }) => {
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <Card
+            // onPress={() =>
+            //   navigation.navigate('Chat', {
+            //     userName: item.userName,
+            //   })
+            // }
+
+            // onPress={() =>
+            //   navigation.navigate('Chat', {
+            //     screen: 'Chat',
+            //     params: {
+            //       itemId: 'param1',
+            //       another: 'anotheraram',
+            //     },
+            //   })
+            // }
             onPress={() =>
               navigation.navigate('Chat', {
-                userName: item.userName,
+                chatId: item.userName,
               })
             }>
             <UserInfo>
               <UserImgWrapper>
                 <UserImg
                   source={{
-                    uri: 'https://reactnative.dev/img/tiny_logo.png',
+                    uri: item.userImg,
                   }}
                 />
               </UserImgWrapper>

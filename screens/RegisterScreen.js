@@ -70,7 +70,7 @@ const RegisterScreen = ({ navigation }) => {
         value={imageURL}
         onChangeText={(text) => setImageURL(text)}
       />
-      <Button title='register' onPress={register} style={styles.button} />
+      <Button title='Register' onPress={register} style={styles.button} />
     </View>
   )
 }

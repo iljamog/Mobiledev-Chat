@@ -1,6 +1,6 @@
 import React, { useLayoutEffect, useState, useCallback, useEffect } from 'react'
 import { View, Text, Touchable, Image } from 'react-native'
-import { useTheme } from '@react-navigation/native'
+import { useTheme, useIsFocused } from '@react-navigation/native'
 import {
   GiftedChat,
   InputToolbar,
@@ -33,7 +33,19 @@ const ChatScreen = ({ route, navigation }) => {
   const [recording, setRecording] = useState(null)
   const [sound, setSound] = useState(null)
   const [isPlaying, setIsPlaying] = useState(false)
-  const { userName } = route.params
+  const [chatID, setChatID] = useState('Chat 1')
+  const isFocused = useIsFocused()
+
+  useEffect(() => {
+    if (isFocused) {
+      console.log('called' + route.params.chatId)
+      if (route.params.chatId) {
+        setChatID(route.params.chatId)
+      }
+
+      // testFunction()
+    }
+  }, [isFocused])
 
   // Recording settings
   const recordingSettings = {
@@ -259,23 +271,22 @@ const ChatScreen = ({ route, navigation }) => {
     }
   }
 
-  const onSend = useCallback((messages = []) => {
+  const onSend = useCallback((messages = [], latestChatID) => {
     setMessages((previousMessages) =>
       GiftedChat.append(previousMessages, messages)
     )
     const { _id, createdAt, text, user } = messages[0]
-    db.collection('chats').add({
+    db.collection(latestChatID).add({
       _id,
       createdAt,
       text,
       user,
     })
-    console.log(route)
   }, [])
 
   useLayoutEffect(() => {
     const unsubscribe = db
-      .collection('chats')
+      .collection(chatID)
       .orderBy('createdAt', 'desc')
       .onSnapshot((snapshot) =>
         setMessages(
@@ -288,13 +299,13 @@ const ChatScreen = ({ route, navigation }) => {
         )
       )
     return unsubscribe
-  }, [])
+  }, [chatID])
 
   return (
     <GiftedChat
       messages={messages}
       showAvatarForEveryMessage={true}
-      onSend={(messages) => onSend(messages)}
+      onSend={(messages) => onSend(messages, chatID)}
       renderInputToolbar={(props) => customtInputToolbar(props)}
       renderAccessory={renderAccessory}
       renderSend={renderSend}

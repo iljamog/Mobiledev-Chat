@@ -8,14 +8,9 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 
 export function DrawerContent(props) {
   const signOut = () => {
-    auth
-      .signOut()
-      .then(() => {
-        navigation.replace('Profile')
-      })
-      .catch((error) => {
-        console.log(error)
-      })
+    auth.signOut().catch((error) => {
+      console.log(error)
+    })
   }
 
   return (
@@ -60,18 +55,18 @@ export function DrawerContent(props) {
               icon={({ color, size }) => (
                 <Icon name='account-group-outline' color={color} size={size} />
               )}
-              label='Friends'
+              label='Messages'
               onPress={() => {
                 props.navigation.navigate('Messages')
               }}></DrawerItem>
-            <DrawerItem
+            {/* <DrawerItem
               icon={({ color, size }) => (
                 <Icon name='chat-outline' color={color} size={size} />
               )}
               label='Chat'
               onPress={() => {
                 props.navigation.navigate('Chat')
-              }}></DrawerItem>
+              }}></DrawerItem> */}
           </Drawer.Section>
         </View>
       </DrawerContentScrollView>

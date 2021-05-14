@@ -13,14 +13,15 @@ export default function SignInStack() {
     <NavigationContainer>
       <Drawer.Navigator
         drawerContent={(props) => <DrawerContent {...props} />}
-        screenOptions={{ headerShown: true, headerTitleAlign: 'center' }}>
+        screenOptions={{ headerShown: true, headerTitleAlign: 'center' }}
+        initialRouteName='Messages'>
         <Drawer.Screen
           name='Chat'
           component={ChatScreen}
           options={({ route, navigation }) => ({
-            title: route.params.userName,
+            title: route.params.chatId,
           })}
-          initialParams={{ userName2: 'Test' }}
+          initialParams={{ chatId: 'Chat 1' }}
         />
         <Drawer.Screen
           name='Profile'
