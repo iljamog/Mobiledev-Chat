@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, Text, Button, StyleSheet, FlatList } from 'react-native'
+import { StyleSheet, FlatList } from 'react-native'
 import {
   Container,
   Card,
@@ -64,21 +64,6 @@ const MessagesScreen = ({ navigation }) => {
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <Card
-            // onPress={() =>
-            //   navigation.navigate('Chat', {
-            //     userName: item.userName,
-            //   })
-            // }
-
-            // onPress={() =>
-            //   navigation.navigate('Chat', {
-            //     screen: 'Chat',
-            //     params: {
-            //       itemId: 'param1',
-            //       another: 'anotheraram',
-            //     },
-            //   })
-            // }
             onPress={() =>
               navigation.navigate('Chat', {
                 chatId: item.userName,

@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useLayoutEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { View, Text, StyleSheet, Image, TextInput } from 'react-native'
 import { auth } from '../firebase'
 import AsyncStorage from '@react-native-async-storage/async-storage'
@@ -6,7 +6,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 const ProfileScreen = ({ navigation }) => {
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(function (user) {})
-    // getDarkmode()
     return unsubscribe
   }, [])
 
@@ -20,7 +19,7 @@ const ProfileScreen = ({ navigation }) => {
           setNotes(notesLS)
         }
       } catch (error) {
-        // saving error
+        console.log(error)
       }
     }
     getNotes()
@@ -32,7 +31,7 @@ const ProfileScreen = ({ navigation }) => {
       console.log('setting notes')
       await AsyncStorage.setItem('notes', e.toString())
     } catch (error) {
-      // saving error
+      console.log(error)
     }
   }
 

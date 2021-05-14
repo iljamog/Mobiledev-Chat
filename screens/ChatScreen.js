@@ -1,34 +1,19 @@
 import React, { useLayoutEffect, useState, useCallback, useEffect } from 'react'
-import { View, Text, Touchable, Image } from 'react-native'
-import { useTheme, useIsFocused } from '@react-navigation/native'
-import {
-  GiftedChat,
-  InputToolbar,
-  Actions,
-  Send,
-} from 'react-native-gifted-chat'
+import { View } from 'react-native'
+import { useIsFocused } from '@react-navigation/native'
+import { GiftedChat, InputToolbar, Send } from 'react-native-gifted-chat'
 import { auth, db } from '../firebase'
-
-//import { utils } from '@react-native-firebase/app'
 import firebase from 'firebase/app'
 import 'firebase/storage'
 import moment from 'moment'
 
-import {
-  AntDesign,
-  SimpleLineIcons,
-  FontAwesome,
-  Entypo,
-  Feather,
-} from '@expo/vector-icons'
+import { AntDesign, FontAwesome, Entypo, Feather } from '@expo/vector-icons'
 import { TouchableOpacity } from 'react-native-gesture-handler'
-import { Avatar } from 'react-native-elements/dist/avatar/Avatar'
 import { Audio } from 'expo-av'
 import * as FileSystem from 'expo-file-system'
 
 const ChatScreen = ({ route, navigation }) => {
   const [messages, setMessages] = useState([])
-  const [itemColor, setItemColor] = useState('black')
   const [isRecording, setIsRecording] = useState(false)
   const [recording, setRecording] = useState(null)
   const [sound, setSound] = useState(null)
@@ -36,14 +21,13 @@ const ChatScreen = ({ route, navigation }) => {
   const [chatID, setChatID] = useState('Chat 1')
   const isFocused = useIsFocused()
 
+  // Salvestab chati ID/nime state-i fokuseerimise hetkel
   useEffect(() => {
     if (isFocused) {
       console.log('called' + route.params.chatId)
       if (route.params.chatId) {
         setChatID(route.params.chatId)
       }
-
-      // testFunction()
     }
   }, [isFocused])
 
@@ -256,13 +240,8 @@ const ChatScreen = ({ route, navigation }) => {
               .ref(`/voice/${nameOfTheFile}.${fileType}`)
               .getDownloadURL()
             //console.log("uri:", url);
-
-            // create a message with audio
-            //onSend({text: url})
           })
           .catch((e) => console.log('error:', e))
-
-        //link to file
       } else {
         console.log('erroor with blob')
       }

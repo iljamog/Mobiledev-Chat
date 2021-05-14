@@ -59,14 +59,6 @@ export function DrawerContent(props) {
               onPress={() => {
                 props.navigation.navigate('Messages')
               }}></DrawerItem>
-            {/* <DrawerItem
-              icon={({ color, size }) => (
-                <Icon name='chat-outline' color={color} size={size} />
-              )}
-              label='Chat'
-              onPress={() => {
-                props.navigation.navigate('Chat')
-              }}></DrawerItem> */}
           </Drawer.Section>
         </View>
       </DrawerContentScrollView>
